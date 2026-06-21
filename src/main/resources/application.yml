@@ -13,8 +13,8 @@ twilio:
 
 aviationstack:
   api-key: ${AVIATIONSTACK_API_KEY}
-  base-url: http://api.aviationstack.com/v1
+  base-url: ${AVIATIONSTACK_BASE_URL}
 
 weatherapi:
   api-key: ${WEATHERAPI_API_KEY}
-  base-url: http://api.weatherapi.com/v1
+  base-url: ${WEATHERAPI_BASE_URL}
