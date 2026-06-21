@@ -1,0 +1,20 @@
+server:
+  port: 7050
+
+logging:
+  level:
+    org.springframework.web: INFO
+
+# Third-party configurations fetched straight from systemic environment paths
+twilio:
+  account-sid: ${TWILIO_ACCOUNT_SID}
+  auth-token: ${TWILIO_AUTH_TOKEN}
+  from-number: ${TWILIO_FROM_NUMBER}
+
+aviationstack:
+  api-key: ${AVIATIONSTACK_API_KEY}
+  base-url: http://api.aviationstack.com/v1
+
+weatherapi:
+  api-key: ${WEATHERAPI_API_KEY}
+  base-url: http://api.weatherapi.com/v1
