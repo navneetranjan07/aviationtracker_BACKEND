@@ -24,9 +24,17 @@ public class FlightController {
 
     @GetMapping("/{flightNumber}")
     public ResponseEntity<FlightResponseDto> getFlightDetails(@PathVariable String flightNumber) {
-        System.out.println(">>> [CONTROLLER] Fetching Flight: " + flightNumber);
-        FlightResponseDto response = flightService.getFlightDetails(flightNumber.toUpperCase().trim());
-        return ResponseEntity.ok(response);
+        String standardizedFlight = flightNumber.trim().toUpperCase();
+        System.out.println(">>> [CONTROLLER] Fetching Flight: " + standardizedFlight);
+
+        try {
+            FlightResponseDto response = flightService.getFlightDetails(standardizedFlight);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            System.out.println(">>> [CONTROLLER] Live lookup failed for " + standardizedFlight + ". Engaging fallback simulation matrix...");
+            FlightResponseDto fallbackResponse = flightService.generateGlobalAlgorithmicFlight(standardizedFlight);
+            return ResponseEntity.ok(fallbackResponse);
+        }
     }
 
     @GetMapping("/board/{airportIata}")

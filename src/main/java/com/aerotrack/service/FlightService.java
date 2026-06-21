@@ -127,7 +127,7 @@ public class FlightService {
      * Algorithmic Matrix Engine: Completely eliminates hardcoding.
      * Generates persistent, repeatable, realistic routes for ANY global flight string.
      */
-    private FlightResponseDto generateGlobalAlgorithmicFlight(String flightNumber) {
+    public FlightResponseDto generateGlobalAlgorithmicFlight(String flightNumber) {
         FlightResponseDto dto = new FlightResponseDto();
         dto.setFlightNumber(flightNumber);
         dto.setAirline(parseAirlinePrefix(flightNumber));
