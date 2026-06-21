@@ -4,8 +4,8 @@ WORKDIR /app
 COPY . .
 RUN mvn clean package -DskipTests
 
-# Stage 2: Run the compiled .jar package in a lightweight JRE environment
-FROM openjdk:17-jdk-slim
+# Stage 2: Run the compiled .jar package in an active, stable JRE environment
+FROM eclipse-temurin:17-jre-jammy
 WORKDIR /app
 COPY --from=build /app/target/*.jar app.jar
 EXPOSE 8080
