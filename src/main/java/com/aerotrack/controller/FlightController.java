@@ -9,6 +9,7 @@ import org.springframework.web.server.ResponseStatusException;
 import org.springframework.http.HttpStatus;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -28,12 +29,18 @@ public class FlightController {
         System.out.println(">>> [CONTROLLER] Fetching Flight: " + standardizedFlight);
 
         try {
-            FlightResponseDto response = flightService.getFlightDetails(standardizedFlight);
-            return ResponseEntity.ok(response);
+            FlightResponseDto liveFlight = flightService.fetchLiveFlightFromApi(standardizedFlight);
+
+            if (liveFlight == null) {
+                System.out.println(">>> [CONTROLLER] Flight " + standardizedFlight + " not active in current airspace map.");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            }
+
+            return ResponseEntity.ok(liveFlight);
+
         } catch (Exception e) {
-            System.out.println(">>> [CONTROLLER] Live lookup failed for " + standardizedFlight + ". Engaging fallback simulation matrix...");
-            FlightResponseDto fallbackResponse = flightService.generateGlobalAlgorithmicFlight(standardizedFlight);
-            return ResponseEntity.ok(fallbackResponse);
+            System.out.println(">>> [CONTROLLER] Live lookup failed for " + standardizedFlight + " (Invalid code or API rate limit).");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
 
@@ -52,5 +59,12 @@ public class FlightController {
         errorBody.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
         errorBody.put("message", ex.getMessage());
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorBody);
+    }
+
+    @GetMapping("/radar")
+    public ResponseEntity<List<FlightResponseDto>> getLiveRadarSwarm() {
+        System.out.println(">>> [CONTROLLER] Broadcaster requested. Scanning regional transponder matrices...");
+        List<FlightResponseDto> realAirspace = flightService.fetchActualLiveAirspace();
+        return ResponseEntity.ok(realAirspace);
     }
 }
